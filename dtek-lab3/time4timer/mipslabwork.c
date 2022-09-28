@@ -39,12 +39,56 @@ void labinit( void )
 
   TRISD |= 0xfe0;
 
+  // Stop timer and clear control register set prescaler at 1:1
+  T2CON = 0x0;
+
+  // clear timer register
+  TMR2 = 0x0;
+  // load period register
+  PR2 = 0xFFFF;
+  // start timer
+  T2CONSET = 0x8000;
+
   return;
 }
 
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
+  int btn = getbtns();
+  if(btn != 0x0)
+  {
+    // sw = 4 bits, each bit representing each switch (0 = off, 1 = on) lsb corresponds to SW1.
+    int sw = getsw();
+
+    // if btn2 is pressed
+    if((btn & 0x1) != 0x0){
+      // empties the nibble representing the 3rd digit in clock. Check lab1 instructions for definition of the NBCD encoded clock.
+      mytime &= 0xff0f;
+      // shifts the switch bits to the correct nibble.
+      // adds the bits mytime
+      mytime = (sw << 4) | mytime;
+    }
+    // if btn3 is pressed
+    if ((btn & 0x2) != 0x0)
+    {
+      // empties the nibble representing the 2nd digit in clock.
+      mytime &= 0xf0ff;
+      // shifts the switch bits to the correct nibble.
+      // adds the bits to mytime
+      mytime = (sw << 8) | mytime;
+    }
+    // if btn4 is pressed
+    if ((btn & 0x4) != 0x0)
+    {
+      // empties the nibble representing the 1st digit in clock.
+      mytime = mytime & 0x0fff;
+      // shifts the switch bits to the correct nibble.
+      // adds the bits mytime
+      mytime = (sw << 12) | mytime;
+    }
+
+  }
   delay(1000);
   time2string( textstring, mytime );
   display_string( 3, textstring );
@@ -53,42 +97,6 @@ void labwork( void )
   // increment the deferenced pointer by one bit each time tick is called.
   *porte += 0x1;
   display_image(96, icon);
-  int btn = getbtns();
 
-  if(btn)
-  {
-    // sw = 4 bits, each bit representing each switch (0 = off, 1 = on) lsb corresponds to SW1.
-    int sw = getsw();
 
-    // if btn2 is pressed
-    if(btn & 0x1){
-      // empties the nibble representing the 3rd digit in clock. Check lab1 instructions for definition of the NBCD encoded clock.
-      mytime = mytime & 0xff0f;
-      // shifts the switch bits to the correct nibble.
-      sw = sw << 4;
-      // adds the bits mytime
-      mytime = mytime | sw;
-    }
-    // if btn3 is pressed
-    if (btn & 0x2)
-    {
-      // empties the nibble representing the 2nd digit in clock.
-      mytime = mytime & 0xf0ff;
-      // shifts the switch bits to the correct nibble.
-      sw = sw << 8;
-      // adds the bits to mytime
-      mytime = mytime | sw;
-    }
-    // if btn4 is pressed
-    if (btn & 0x4)
-    {
-      // empties the nibble representing the 1st digit in clock.
-      mytime = mytime & 0x0fff;
-      // shifts the switch bits to the correct nibble.
-      sw = sw << 12;
-      // adds the bits mytime
-      mytime = mytime | sw;
-    }
-
-  }
 }

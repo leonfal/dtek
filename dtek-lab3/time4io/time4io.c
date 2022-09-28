@@ -2,18 +2,14 @@
 #include <pic32mx.h>
 #include "mipslab.h"
 
-int getsw( void )
+int getsw(void)
 {
-  volatile int *z = PORTD;
-  *z = (*z & 0x00000f00) >> 8;
-
-  return *z;
+  int swi = (PORTD >> 8) & 0xF;
+  return swi;
 }
 
 int getbtns(void)
 {
-  volatile int *z = PORTD;
-  *z = (*z & 0x000000e0) >> 5;
-
-  return *z;
+  int btn = (PORTD >> 5) & 0x7;
+  return btn;
 }
