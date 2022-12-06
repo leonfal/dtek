@@ -36,7 +36,7 @@ void labinit( void )
   // sets 8 lsb to 0 (output) using bitwise inverse.
   *trise &= ~0xff;
   // initialize the leds to off.
-  *porte = 0x0;
+  *porte &= ~0xff;
 
   TRISD |= 0xfe0;
 

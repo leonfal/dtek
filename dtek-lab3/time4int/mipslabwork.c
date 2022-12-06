@@ -26,6 +26,11 @@ volatile int *porte = (volatile int*)0xbf886110;
 /* Interrupt Service Routine */
 void user_isr( void )
 {
+  if(IFS(0) & (1 << 7))
+  {
+    *porte += 0x1;
+    IFSCLR(0) = (1 << 7);
+  }
   // if flag is 1, reset event.
   // Timer 2 interrupt flag. Can be found at bit 8 in IFS0
   if((IFS(0) & 0x100) != 0)
@@ -48,6 +53,9 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
+  // IPC: A three bit field in the IPC register contains the interrupt priority
+
+  // IEC: A one bit field in the IEC register contains the interrupt enable flag. Interrupts for the related source are only acknowledged when the related bit in the IEC register is set one.
   // Set flag in IEC register
   IECSET(0) = (1 << 8);
   // Set a non zero priority

@@ -53,7 +53,7 @@ delay:
         li    $t4, 0            # int i    = 0
 
     forloop:
-        beq    $t4, 70, whileloop    # Check if i = the constant // 70 for MARS 4000 for MCB32
+        beq    $t4, 4000, whileloop    # Check if i = the constant // 70 for MARS 4000 for MCB32
         nop
         addi    $t4, $t4, 1        # i = i + 1
         j    forloop            # Iterate

@@ -104,7 +104,7 @@ delay:
         li    $t4, 0            # int i    = 0
 
     forloop:
-        beq    $t4, 0, whileloop    # Check if i = the constant
+        beq    $t4, 4000, whileloop    # Check if i = the constant
         nop
         addi    $t4, $t4, 1        # i = i + 1
         j    forloop            # Iterate
